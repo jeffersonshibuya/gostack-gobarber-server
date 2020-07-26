@@ -1,5 +1,3 @@
-import AppError from '@shared/errors/AppError';
-
 import FakeAppointmentsRepository from '../repositories/fakes/FakeAppointmentsRepository';
 import ListProviderDayAvailabilityService from './ListProviderDayAvailabilityService';
 
@@ -17,11 +15,13 @@ describe('ListProviderDayAvailability', () => {
   it('should be able to list the day availatility from provider', async () => {
     await fakeAppointmentsRepository.create({
       provider_id: 'user',
+      user_id: '',
       date: new Date(2020, 6, 25, 8, 0, 0),
     });
 
     await fakeAppointmentsRepository.create({
       provider_id: 'user',
+      user_id: '',
       date: new Date(2020, 6, 25, 10, 0, 0),
     });
 
@@ -43,11 +43,13 @@ describe('ListProviderDayAvailability', () => {
   it('should not be able to schedule appointment in the past', async () => {
     await fakeAppointmentsRepository.create({
       provider_id: 'user',
+      user_id: '',
       date: new Date(2020, 6, 25, 14, 0, 0),
     });
 
     await fakeAppointmentsRepository.create({
       provider_id: 'user',
+      user_id: '',
       date: new Date(2020, 6, 25, 15, 0, 0),
     });
 
