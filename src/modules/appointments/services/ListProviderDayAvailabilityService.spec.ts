@@ -1,4 +1,4 @@
-// import AppError from '@shared/errors/AppError';
+import AppError from '@shared/errors/AppError';
 
 import FakeAppointmentsRepository from '../repositories/fakes/FakeAppointmentsRepository';
 import ListProviderDayAvailabilityService from './ListProviderDayAvailabilityService';
@@ -17,17 +17,17 @@ describe('ListProviderDayAvailability', () => {
   it('should be able to list the day availatility from provider', async () => {
     await fakeAppointmentsRepository.create({
       provider_id: 'user',
-      date: new Date(2020, 6, 24, 8, 0, 0),
+      date: new Date(2020, 6, 25, 8, 0, 0),
     });
 
     await fakeAppointmentsRepository.create({
       provider_id: 'user',
-      date: new Date(2020, 6, 24, 10, 0, 0),
+      date: new Date(2020, 6, 25, 10, 0, 0),
     });
 
     const availability = await listProviderDayAvailabilityService.execute({
       provider_id: 'user',
-      day: 24,
+      day: 25,
       year: 2020,
       month: 7,
     });
@@ -35,9 +35,42 @@ describe('ListProviderDayAvailability', () => {
     expect(availability).toEqual(
       expect.arrayContaining([
         { hour: 8, available: false },
-        { hour: 9, available: true },
         { hour: 10, available: false },
-        { hour: 11, available: true },
+      ]),
+    );
+  });
+
+  it('should not be able to schedule appointment in the past', async () => {
+    await fakeAppointmentsRepository.create({
+      provider_id: 'user',
+      date: new Date(2020, 6, 25, 14, 0, 0),
+    });
+
+    await fakeAppointmentsRepository.create({
+      provider_id: 'user',
+      date: new Date(2020, 6, 25, 15, 0, 0),
+    });
+
+    jest.spyOn(Date, 'now').mockImplementationOnce(() => {
+      return new Date(2020, 6, 25, 11).getTime();
+    });
+
+    const availability = await listProviderDayAvailabilityService.execute({
+      provider_id: 'user',
+      day: 25,
+      year: 2020,
+      month: 7,
+    });
+
+    expect(availability).toEqual(
+      expect.arrayContaining([
+        { hour: 8, available: false },
+        { hour: 9, available: false },
+        { hour: 10, available: false },
+        { hour: 13, available: true },
+        { hour: 14, available: false },
+        { hour: 15, available: false },
+        { hour: 16, available: true },
       ]),
     );
   });
