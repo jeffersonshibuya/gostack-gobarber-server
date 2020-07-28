@@ -25,7 +25,7 @@ class AppointmentsRepsoitory implements IAppointmentsRepository {
         provider_id,
         date: Raw(
           dateFieldName =>
-            `to_char(${dateFieldName}, 'MM-YYYY') = ${parsedMonth}-${year}`,
+            `to_char(${dateFieldName}, 'MM-YYYY') = '${parsedMonth}-${year}'`,
         ),
       },
     });
@@ -47,7 +47,7 @@ class AppointmentsRepsoitory implements IAppointmentsRepository {
         provider_id,
         date: Raw(
           dateFieldName =>
-            `to_char(${dateFieldName}, 'DD-MM-YYYY') = ${parsedMonth}-${year}-${parsedDay}`,
+            `to_char(${dateFieldName}, 'DD-MM-YYYY') = '${parsedDay}-${parsedMonth}-${year}'`,
         ),
       },
     });
