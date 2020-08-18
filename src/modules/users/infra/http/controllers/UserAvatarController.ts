@@ -6,15 +6,20 @@ import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarSer
 
 export default class UserAvatarController {
   public async update(request: Request, response: Response): Promise<Response> {
-    const updateUserAvatar = container.resolve(UpdateUserAvatarService);
+    try {
+      const updateUserAvatar = container.resolve(UpdateUserAvatarService);
 
-    const user = await updateUserAvatar.execute({
-      user_id: request.user.id,
-      avatarFilename: request.file.filename,
-    });
+      const user = await updateUserAvatar.execute({
+        user_id: request.user.id,
+        avatarFilename: request.file.filename,
+      });
 
-    delete user.password;
+      delete user.password;
 
-    return response.json(classToClass(user));
+      return response.json(classToClass(user));
+    } catch (error) {
+      console.log(error);
+      return response.json();
+    }
   }
 }
