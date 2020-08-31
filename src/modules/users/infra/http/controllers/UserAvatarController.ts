@@ -6,6 +6,7 @@ import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarSer
 
 export default class UserAvatarController {
   public async update(request: Request, response: Response): Promise<Response> {
+    console.log(request.user);
     try {
       const updateUserAvatar = container.resolve(UpdateUserAvatarService);
 
@@ -19,7 +20,7 @@ export default class UserAvatarController {
       return response.json(classToClass(user));
     } catch (error) {
       console.log(error);
-      return response.json();
+      return response.status(500).json();
     }
   }
 }
