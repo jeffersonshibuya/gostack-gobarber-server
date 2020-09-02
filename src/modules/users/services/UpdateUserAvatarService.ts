@@ -4,6 +4,7 @@ import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IStorageProvder from '@shared/container/providers/StorageProvider/modules/IStorageProvider';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface IRequest {
   user_id: string;
@@ -18,19 +19,23 @@ class UpdateUserAvatarService {
 
     @inject('StorageProvider')
     private storagetprovider: IStorageProvder,
+
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider,
   ) {}
 
   public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
     const user = await this.usersRepository.findById(user_id);
+    await this.cacheProvider.invalidatePrefix('provider-appointments');
 
     if (!user)
       throw new AppError('Only authenticated users can change avatar', 401);
 
     // Verifica se usuário tem avatar já cadastrado
     // e remove caso exista
-    // if (user.avatar) {
-    //   this.storagetprovider.deleteFile(user.avatar);
-    // }
+    if (user.avatar) {
+      this.storagetprovider.deleteFile(user.avatar);
+    }
 
     const fileName = await this.storagetprovider.saveFile(avatarFilename);
     user.avatar = fileName;
