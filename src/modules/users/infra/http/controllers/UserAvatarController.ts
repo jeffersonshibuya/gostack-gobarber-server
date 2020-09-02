@@ -9,10 +9,9 @@ export default class UserAvatarController {
     try {
       const updateUserAvatar = container.resolve(UpdateUserAvatarService);
 
-      console.log(String(request.file.filename).trim().replace(' ', ''));
       const user = await updateUserAvatar.execute({
         user_id: request.user.id,
-        avatarFilename: String(request.file.filename).trim().replace(' ', ''),
+        avatarFilename: request.file.filename,
       });
 
       delete user.password;
