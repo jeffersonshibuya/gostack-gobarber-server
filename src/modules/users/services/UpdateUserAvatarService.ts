@@ -28,9 +28,9 @@ class UpdateUserAvatarService {
 
     // Verifica se usuário tem avatar já cadastrado
     // e remove caso exista
-    if (user.avatar) {
-      this.storagetprovider.deleteFile(user.avatar);
-    }
+    // if (user.avatar) {
+    //   this.storagetprovider.deleteFile(user.avatar);
+    // }
 
     const fileName = await this.storagetprovider.saveFile(avatarFilename);
     user.avatar = fileName;

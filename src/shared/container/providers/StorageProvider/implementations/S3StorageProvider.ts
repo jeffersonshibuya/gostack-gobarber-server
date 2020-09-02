@@ -23,10 +23,11 @@ export default class S3StorageProvider implements IStorageProvder {
 
     const fileContent = await fs.promises.readFile(originalPath);
 
+    const fileFormatted = file.replace(/[!@#$%^&* ()]/g, '');
     await this.client
       .putObject({
         Bucket: uploadConfig.config.aws.bucket,
-        Key: file,
+        Key: fileFormatted,
         ACL: 'public-read',
         ContentType,
         Body: fileContent,
@@ -35,7 +36,7 @@ export default class S3StorageProvider implements IStorageProvder {
 
     await fs.promises.unlink(originalPath);
 
-    return file;
+    return fileFormatted;
   }
 
   public async deleteFile(file: string): Promise<void> {
