@@ -6,13 +6,12 @@ import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarSer
 
 export default class UserAvatarController {
   public async update(request: Request, response: Response): Promise<Response> {
-    console.log(request.user);
     try {
       const updateUserAvatar = container.resolve(UpdateUserAvatarService);
 
       const user = await updateUserAvatar.execute({
         user_id: request.user.id,
-        avatarFilename: request.file.filename,
+        avatarFilename: request.file.filename.trim().replace(' ', ''),
       });
 
       delete user.password;
