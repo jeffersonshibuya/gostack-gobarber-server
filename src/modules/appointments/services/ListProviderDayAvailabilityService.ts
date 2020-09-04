@@ -53,6 +53,8 @@ export default class ListProviderDayAvailabilityService {
 
       const compareDate = new Date(year, month - 1, day, hour);
 
+      console.log(year, month - 1, day, hour);
+      console.log(new Date(year, month - 1, day, hour));
       console.log(compareDate, currentDate);
 
       return {
